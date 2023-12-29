@@ -3,8 +3,12 @@
  */
 package template;
 
+import java.nio.file.Path;
+import java.util.List;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 public class App implements Runnable {
 
@@ -23,14 +27,20 @@ public class App implements Runnable {
   @Option(names = {"-l", "--lines"})
   private boolean printLines;
 
+  @Parameters
+  private List<Path> files;
+
 
   @Override
   public void run() {
     if (help) {
       System.out.println(getHelp());
-      return;
+    } else {
+      runInternal();
     }
+  }
 
+  private void runInternal() {
     final var options = new OptionsBuilder()
       .printBytes(printBytes)
       .printChars(printChars)
@@ -38,7 +48,8 @@ public class App implements Runnable {
       .printLines(printLines)
       .build();
 
-
+    System.out.println("Options: " + options);
+    System.out.println("Files: " + files);
   }
 
   private String getHelp() {
