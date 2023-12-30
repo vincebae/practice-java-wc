@@ -3,6 +3,8 @@
  */
 package binikomi.wc;
 
+import binikomi.wc.core.WordCounter;
+import binikomi.wc.domain.Options;
 import java.nio.file.Path;
 import java.util.List;
 import picocli.CommandLine.Command;
@@ -10,7 +12,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(mixinStandardHelpOptions = true)
-class AppRunner implements Runnable {
+final class AppRunner implements Runnable {
 
   @Option(names = {"-c", "--bytes"})
   private boolean printBytes;
@@ -26,24 +28,32 @@ class AppRunner implements Runnable {
 
   @Parameters private List<Path> files;
 
+  private final WordCounter wordCounter;
+
+  AppRunner(WordCounter wordCounter) {
+    this.wordCounter = wordCounter;
+  }
+
   @Override
   public void run() {
-    final var options = getOptions();
-    System.out.println("Options: " + options);
-    System.out.println("Files: " + files);
+    wordCounter.count(getOptions(), files == null ? List.of() : files);
   }
 
   private Options getOptions() {
-    if (printBytes || printChars || printWords || printLines) {
-      return new OptionsBuilder()
-          .printBytes(printBytes)
-          .printChars(printChars)
-          .printWords(printWords)
-          .printLines(printLines)
-          .build();
-    }
-
     // when no options are provided, return default option.
-    return Options.DEFAULT_OPTIONS;
+    final boolean hasAnyOptions = printBytes || printChars || printWords || printLines;
+    return hasAnyOptions
+        ? new Options.Builder()
+            .printBytes(printBytes)
+            .printChars(printChars)
+            .printWords(printWords)
+            .printLines(printLines)
+            .build()
+        : new Options.Builder()
+            .printBytes(false)
+            .printChars(true)
+            .printWords(true)
+            .printLines(true)
+            .build();
   }
 }
