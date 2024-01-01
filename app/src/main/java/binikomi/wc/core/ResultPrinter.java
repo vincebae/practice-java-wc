@@ -68,12 +68,11 @@ public final class ResultPrinter {
 
   private static int maxWidth(Result result) {
     return switch (result) {
-      case CountResult countResult ->
-          presentValueStream(countResult)
-              .map(String::valueOf)
-              .mapToInt(String::length)
-              .max()
-              .orElse(0);
+      case CountResult countResult -> presentValueStream(countResult)
+          .map(String::valueOf)
+          .mapToInt(String::length)
+          .max()
+          .orElse(0);
       case ErrorResult errorResult -> 0;
     };
   }
@@ -86,13 +85,13 @@ public final class ResultPrinter {
   }
 
   private static String getCountResultOutputString(CountResult countResult, int width) {
-        final var format = "%" + width + "d";
-        final var stringBuilder = new StringBuilder();
-        presentValueStream(countResult)
-            .map(value -> String.format(format, value))
-            .forEach(stringBuilder::append);
-        countResult.filename().ifPresent(filename -> stringBuilder.append(" ").append(filename));
-        return stringBuilder.toString();
+    final var format = "%" + width + "d";
+    final var stringBuilder = new StringBuilder();
+    presentValueStream(countResult)
+        .map(value -> String.format(format, value))
+        .forEach(stringBuilder::append);
+    countResult.filename().ifPresent(filename -> stringBuilder.append(" ").append(filename));
+    return stringBuilder.toString();
   }
 
   private static Stream<Integer> presentValueStream(CountResult result) {

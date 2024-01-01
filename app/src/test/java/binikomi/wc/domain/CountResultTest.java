@@ -67,7 +67,13 @@ class CountResultTest {
   @Test
   void buildWithAll() {
     final var actual =
-        new CountResult.Builder().filename(FILENAME).bytes(1234).chars(123).words(12).lines(1).build();
+        new CountResult.Builder()
+            .filename(FILENAME)
+            .bytes(1234)
+            .chars(123)
+            .words(12)
+            .lines(1)
+            .build();
 
     assertThat(actual.filename()).hasValue(FILENAME);
     assertThat(actual.bytes()).hasValue(1234);
