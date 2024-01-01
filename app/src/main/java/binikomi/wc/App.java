@@ -3,13 +3,16 @@
  */
 package binikomi.wc;
 
+import binikomi.wc.core.ResultPrinter;
+import binikomi.wc.core.TextProcessor;
 import binikomi.wc.core.WordCounter;
 import picocli.CommandLine;
 
 public final class App {
 
   public static void main(String[] args) {
-    final var appRunner = new AppRunner(new WordCounter());
+    final var wordCounter = new WordCounter(new TextProcessor(), new ResultPrinter());
+    final var appRunner = new AppRunner(wordCounter);
     final var commandLine = new CommandLine(appRunner);
     commandLine.execute(args);
   }

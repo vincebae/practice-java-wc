@@ -1,9 +1,4 @@
 package binikomi.wc.core;
 
-/**
- * Unit tests for {@code TextCounter}.
- */
-class TextCounterTest {
-
-  
-}
+/** Unit tests for {@code TextCounter}. */
+class TextCounterTest {}

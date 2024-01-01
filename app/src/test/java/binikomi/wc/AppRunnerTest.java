@@ -20,9 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mockito;
 import picocli.CommandLine;
 
-/**
- * Unit tests for {@code AppRunner}.
- */
+/** Unit tests for {@code AppRunner}. */
 class AppRunnerTest {
 
   private static final String FILENAME1 = "file_name_1";
