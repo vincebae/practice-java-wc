@@ -8,6 +8,7 @@
 plugins {
     id 'application'
     id 'java'
+    id 'jacoco'
     id 'eclipse'
     id 'com.diffplug.spotless' version "6.23.3"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
@@ -74,6 +75,12 @@ test {
     }
 
     include '**/*Properties.class'
-	include '**/*Test.class'
-	include '**/*Tests.class'
+	  include '**/*Test.class'
+	  include '**/*Tests.class'
+
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
 }
