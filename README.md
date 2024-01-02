@@ -4,7 +4,7 @@ Coding challenge from https://codingchallenges.fyi/challenges/challenge-wc
 
 #### Status
 
-In-progress
+Done
 
 #### Requirements
 
