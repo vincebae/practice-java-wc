@@ -11,7 +11,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-@Command(mixinStandardHelpOptions = true)
+@Command(name = "wc", mixinStandardHelpOptions = true, version = "1.0")
 final class AppRunner implements Runnable {
 
   @Option(names = {"-c", "--bytes"})
