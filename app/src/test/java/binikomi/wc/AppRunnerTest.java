@@ -37,10 +37,11 @@ class AppRunnerTest {
 
   @Test
   void runAppWithNoOptions() {
-    doNothing().when(mockWordCounter).count(any(Options.class), anyList());
+    doNothing().when(mockWordCounter).count(anyList(), any(Options.class));
 
     new CommandLine(appRunner).execute();
 
+    final List<Path> expectedFiles = List.of();
     final var expectedOptions =
         new Options.Builder()
             .printBytes(false)
@@ -48,9 +49,8 @@ class AppRunnerTest {
             .printWords(true)
             .printLines(true)
             .build();
-    final List<Path> expectedFiles = List.of();
 
-    verify(mockWordCounter, times(1)).count(expectedOptions, expectedFiles);
+    verify(mockWordCounter, times(1)).count(expectedFiles, expectedOptions);
   }
 
   @Test
@@ -62,42 +62,42 @@ class AppRunnerTest {
 
   @ParameterizedTest
   @MethodSource("runAppTestsDataSource")
-  void runAppTests(String[] args, Options expectedOptions, List<Path> expectedFiles) {
-    doNothing().when(mockWordCounter).count(any(Options.class), anyList());
+  void runAppTests(String[] args, List<Path> expectedFiles, Options expectedOptions) {
+    doNothing().when(mockWordCounter).count(anyList(), any(Options.class));
 
     new CommandLine(appRunner).execute(args);
 
-    verify(mockWordCounter, times(1)).count(expectedOptions, expectedFiles);
+    verify(mockWordCounter, times(1)).count(expectedFiles, expectedOptions);
   }
 
   private static Stream<Arguments> runAppTestsDataSource() {
     return Stream.of(
         Arguments.of(
             new String[] {"-c", "-m", "-w", "-l", FILENAME1, FILENAME2},
+            List.of(Path.of(FILENAME1), Path.of(FILENAME2)),
             new Options.Builder()
                 .printBytes(true)
                 .printChars(true)
                 .printWords(true)
                 .printLines(true)
-                .build(),
-            List.of(Path.of(FILENAME1), Path.of(FILENAME2))),
+                .build()),
         Arguments.of(
             new String[] {"--bytes", "--chars", "--words", "--lines", FILENAME1, FILENAME2},
+            List.of(Path.of(FILENAME1), Path.of(FILENAME2)),
             new Options.Builder()
                 .printBytes(true)
                 .printChars(true)
                 .printWords(true)
                 .printLines(true)
-                .build(),
-            List.of(Path.of(FILENAME1), Path.of(FILENAME2))),
+                .build()),
         Arguments.of(
             new String[] {"-c", "--words", FILENAME1},
+            List.of(Path.of(FILENAME1)),
             new Options.Builder()
                 .printBytes(true)
                 .printChars(false)
                 .printWords(true)
                 .printLines(false)
-                .build(),
-            List.of(Path.of(FILENAME1))));
+                .build()));
   }
 }

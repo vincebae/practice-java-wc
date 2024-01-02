@@ -10,8 +10,8 @@ In-progress
 
 * JDK version 21
 
-#### Build
-`$ ./gradlew build`
+#### Build Fat Jar
+`$ ./gradlew shadowJar`
 
 #### Run Tests
 

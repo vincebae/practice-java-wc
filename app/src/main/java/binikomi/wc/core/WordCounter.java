@@ -1,7 +1,12 @@
 package binikomi.wc.core;
 
+import binikomi.wc.domain.ErrorCode;
+import binikomi.wc.domain.ErrorResult;
 import binikomi.wc.domain.Options;
 import binikomi.wc.domain.Result;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.io.ByteStreams;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -21,19 +26,39 @@ public final class WordCounter {
     this.resultPrinter = resultPrinter;
   }
 
-  public void count(Options options, List<Path> files) {
-    LOGGER.info("Options: {}", options);
-    LOGGER.info("Files: {}", files);
-
-    final var results = files.stream().map(file -> count(options, file)).toList();
+  public void count(List<Path> files, Options options) {
+    final var results =
+        files.isEmpty()
+            ? countFromStdin(options)
+            : files.stream()
+                .map(Path::toAbsolutePath)
+                .map(file -> countFile(file, options))
+                .toList();
     resultPrinter.getOutputStrings(results).forEach(System.out::println);
   }
 
-  private Result count(Options options, Path file) {
+  @VisibleForTesting
+  Result countFile(Path file, Options options) {
+    final var filename = file.getFileName().toString();
     if (!Files.exists(file)) {
+      return new ErrorResult(filename, ErrorCode.FILE_NOT_FOUND);
     } else if (Files.isDirectory(file)) {
+      return new ErrorResult(filename, ErrorCode.DIRECTORY);
     } else {
+      try {
+        return textProcessor.process(filename, Files.readAllBytes(file), options);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
     }
-    return null;
+  }
+
+  private List<Result> countFromStdin(Options options) {
+    try {
+      byte[] bytes = ByteStreams.toByteArray(System.in);
+      return List.of(textProcessor.process("", bytes, options));
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

@@ -36,7 +36,7 @@ final class AppRunner implements Runnable {
 
   @Override
   public void run() {
-    wordCounter.count(getOptions(), files == null ? List.of() : files);
+    wordCounter.count(files == null ? List.of() : files, getOptions());
   }
 
   private Options getOptions() {
